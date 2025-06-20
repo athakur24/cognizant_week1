@@ -1,0 +1,104 @@
+using System;
+
+namespace MVCPatternExample
+{
+    // Step 2: Model Class
+    public class Student
+    {
+        public string Name { get; set; }
+        public int Id { get; set; }
+        public string Grade { get; set; }
+    }
+
+    // Step 3: View Class
+    public class StudentView
+    {
+        public void DisplayStudentDetails(string name, int id, string grade)
+        {
+            Console.WriteLine("\n=== Student Details ===");
+            Console.WriteLine($"Name:  {name}");
+            Console.WriteLine($"ID:    {id}");
+            Console.WriteLine($"Grade: {grade}");
+        }
+    }
+
+    // Step 4: Controller Class
+    public class StudentController
+    {
+        private Student _student;
+        private StudentView _view;
+
+        public StudentController(Student student, StudentView view)
+        {
+            _student = student;
+            _view = view;
+        }
+
+        // Getters and Setters for the model
+        public void SetStudentName(string name)
+        {
+            _student.Name = name;
+        }
+
+        public string GetStudentName()
+        {
+            return _student.Name;
+        }
+
+        public void SetStudentId(int id)
+        {
+            _student.Id = id;
+        }
+
+        public int GetStudentId()
+        {
+            return _student.Id;
+        }
+
+        public void SetStudentGrade(string grade)
+        {
+            _student.Grade = grade;
+        }
+
+        public string GetStudentGrade()
+        {
+            return _student.Grade;
+        }
+
+        // Update the view using model data
+        public void UpdateView()
+        {
+            _view.DisplayStudentDetails(_student.Name, _student.Id, _student.Grade);
+        }
+    }
+
+    // Step 5: Test the MVC Implementation
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("=== Student Record Management (MVC Pattern) ===");
+
+            // Create a student (Model)
+            Student student = new Student { Name = "Alice", Id = 101, Grade = "A" };
+
+            // Create the view
+            StudentView view = new StudentView();
+
+            // Create the controller and connect model with view
+            StudentController controller = new StudentController(student, view);
+
+            // Display initial student data
+            controller.UpdateView();
+
+            // Update student details via controller
+            controller.SetStudentName("Bob");
+            controller.SetStudentGrade("A+");
+
+            // Display updated student data
+            controller.UpdateView();
+
+            Console.ReadLine();
+        }
+    }
+}
