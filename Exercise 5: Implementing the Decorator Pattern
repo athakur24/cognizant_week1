@@ -1,0 +1,82 @@
+using System;
+
+namespace DecoratorPatternExample
+{
+    // Step 2: Component Interface
+    public interface INotifier
+    {
+        void Send(string message);
+    }
+
+    // Step 3: Concrete Component
+    public class EmailNotifier : INotifier
+    {
+        public void Send(string message)
+        {
+            Console.WriteLine($"Email sent: {message}");
+        }
+    }
+
+    // Step 4: Abstract Decorator
+    public abstract class NotifierDecorator : INotifier
+    {
+        protected INotifier _wrappee;
+
+        public NotifierDecorator(INotifier notifier)
+        {
+            _wrappee = notifier;
+        }
+
+        public virtual void Send(string message)
+        {
+            _wrappee.Send(message);
+        }
+    }
+
+    // Step 4: Concrete Decorators
+
+    public class SMSNotifierDecorator : NotifierDecorator
+    {
+        public SMSNotifierDecorator(INotifier notifier) : base(notifier) { }
+
+        public override void Send(string message)
+        {
+            base.Send(message); // send email or previous
+            Console.WriteLine($"SMS sent: {message}");
+        }
+    }
+
+    public class SlackNotifierDecorator : NotifierDecorator
+    {
+        public SlackNotifierDecorator(INotifier notifier) : base(notifier) { }
+
+        public override void Send(string message)
+        {
+            base.Send(message); // send email/SMS first
+            Console.WriteLine($"Slack message sent: {message}");
+        }
+    }
+
+    // Step 5: Test the Decorator Implementation
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("=== Notification System ===");
+
+            // Base notifier
+            INotifier email = new EmailNotifier();
+
+            // Add SMS on top of Email
+            INotifier emailAndSMS = new SMSNotifierDecorator(email);
+
+            // Add Slack on top of Email + SMS
+            INotifier fullNotifier = new SlackNotifierDecorator(emailAndSMS);
+
+            // Send the notification using all channels
+            fullNotifier.Send("Hello! This is your notification.");
+
+            Console.ReadLine();
+        }
+    }
+}
