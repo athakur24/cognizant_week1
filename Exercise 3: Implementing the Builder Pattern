@@ -1,0 +1,93 @@
+using System;
+
+namespace BuilderPatternExample
+{
+    // Step 2: Product Class
+    public class Computer
+    {
+        // Attributes (fields)
+        public string CPU { get; }
+        public string RAM { get; }
+        public string Storage { get; }
+
+        // Step 4: Private constructor that accepts a Builder
+        private Computer(Builder builder)
+        {
+            CPU = builder.CPU;
+            RAM = builder.RAM;
+            Storage = builder.Storage;
+        }
+
+        // Step 3: Builder class inside Computer
+        public class Builder
+        {
+            // Fields to be set
+            public string CPU { get; private set; }
+            public string RAM { get; private set; }
+            public string Storage { get; private set; }
+
+            // Methods to set optional fields
+            public Builder SetCPU(string cpu)
+            {
+                CPU = cpu;
+                return this;
+            }
+
+            public Builder SetRAM(string ram)
+            {
+                RAM = ram;
+                return this;
+            }
+
+            public Builder SetStorage(string storage)
+            {
+                Storage = storage;
+                return this;
+            }
+
+            // Method to build the final Computer object
+            public Computer Build()
+            {
+                return new Computer(this);
+            }
+        }
+
+        // Method to display the computer configuration
+        public void ShowSpecs()
+        {
+            Console.WriteLine("Computer Configuration:");
+            Console.WriteLine($"CPU: {CPU}");
+            Console.WriteLine($"RAM: {RAM}");
+            Console.WriteLine($"Storage: {Storage}");
+        }
+    }
+
+    // Step 5: Test the Builder
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Build a high-end computer
+            Computer gamingPC = new Computer.Builder()
+                .SetCPU("Intel Core i9")
+                .SetRAM("32GB")
+                .SetStorage("2TB NVMe SSD")
+                .Build();
+
+            gamingPC.ShowSpecs();
+
+            Console.WriteLine();
+
+            // Build a budget computer
+            Computer officePC = new Computer.Builder()
+                .SetCPU("Intel Core i3")
+                .SetRAM("8GB")
+                .SetStorage("500GB HDD")
+                .Build();
+
+            officePC.ShowSpecs();
+
+            Console.ReadLine();
+        }
+    }
+}
