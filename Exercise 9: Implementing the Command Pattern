@@ -1,0 +1,106 @@
+using System;
+
+namespace CommandPatternExample
+{
+    // Step 2: Command Interface
+    public interface ICommand
+    {
+        void Execute();
+    }
+
+    // Step 5: Receiver Class
+    public class Light
+    {
+        public void TurnOn()
+        {
+            Console.WriteLine("💡 The light is ON.");
+        }
+
+        public void TurnOff()
+        {
+            Console.WriteLine("💡 The light is OFF.");
+        }
+    }
+
+    // Step 3: Concrete Command - Turn Light On
+    public class LightOnCommand : ICommand
+    {
+        private readonly Light _light;
+
+        public LightOnCommand(Light light)
+        {
+            _light = light;
+        }
+
+        public void Execute()
+        {
+            _light.TurnOn();
+        }
+    }
+
+    // Step 3: Concrete Command - Turn Light Off
+    public class LightOffCommand : ICommand
+    {
+        private readonly Light _light;
+
+        public LightOffCommand(Light light)
+        {
+            _light = light;
+        }
+
+        public void Execute()
+        {
+            _light.TurnOff();
+        }
+    }
+
+    // Step 4: Invoker Class
+    public class RemoteControl
+    {
+        private ICommand _command;
+
+        // Set a command to be executed
+        public void SetCommand(ICommand command)
+        {
+            _command = command;
+        }
+
+        // Execute the currently set command
+        public void PressButton()
+        {
+            if (_command != null)
+                _command.Execute();
+            else
+                Console.WriteLine("No command is set.");
+        }
+    }
+
+    // Step 6: Test Class
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("=== Home Automation System (Command Pattern) ===\n");
+
+            // Receiver
+            Light livingRoomLight = new Light();
+
+            // Concrete commands
+            ICommand lightOn = new LightOnCommand(livingRoomLight);
+            ICommand lightOff = new LightOffCommand(livingRoomLight);
+
+            // Invoker
+            RemoteControl remote = new RemoteControl();
+
+            // Turn the light ON
+            remote.SetCommand(lightOn);
+            remote.PressButton();
+
+            // Turn the light OFF
+            remote.SetCommand(lightOff);
+            remote.PressButton();
+
+            Console.ReadLine();
+        }
+    }
+}
