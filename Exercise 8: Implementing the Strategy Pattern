@@ -1,0 +1,93 @@
+using System;
+
+namespace StrategyPatternExample
+{
+    // Step 2: Strategy Interface
+    public interface IPaymentStrategy
+    {
+        void Pay(decimal amount);
+    }
+
+    // Step 3: Concrete Strategy - Credit Card
+    public class CreditCardPayment : IPaymentStrategy
+    {
+        private string _cardNumber;
+        private string _cardHolder;
+
+        public CreditCardPayment(string cardNumber, string cardHolder)
+        {
+            _cardNumber = cardNumber;
+            _cardHolder = cardHolder;
+        }
+
+        public void Pay(decimal amount)
+        {
+            Console.WriteLine($"Paid {amount:C} using Credit Card [{_cardHolder} - {_cardNumber}].");
+        }
+    }
+
+    // Step 3: Concrete Strategy - PayPal
+    public class PayPalPayment : IPaymentStrategy
+    {
+        private string _email;
+
+        public PayPalPayment(string email)
+        {
+            _email = email;
+        }
+
+        public void Pay(decimal amount)
+        {
+            Console.WriteLine($"Paid {amount:C} using PayPal account [{_email}].");
+        }
+    }
+
+    // Step 4: Context Class
+    public class PaymentContext
+    {
+        private IPaymentStrategy _paymentStrategy;
+
+        // Set or change payment strategy
+        public void SetPaymentStrategy(IPaymentStrategy strategy)
+        {
+            _paymentStrategy = strategy;
+        }
+
+        // Execute payment
+        public void Pay(decimal amount)
+        {
+            if (_paymentStrategy == null)
+            {
+                Console.WriteLine("No payment method selected.");
+                return;
+            }
+
+            _paymentStrategy.Pay(amount);
+        }
+    }
+
+    // Step 5: Test Class
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("=== Strategy Pattern: Payment System ===\n");
+
+            PaymentContext context = new PaymentContext();
+
+            // Using Credit Card
+            IPaymentStrategy creditCard = new CreditCardPayment("1234-5678-9876", "Alice");
+            context.SetPaymentStrategy(creditCard);
+            context.Pay(150.00m);
+
+            Console.WriteLine();
+
+            // Using PayPal
+            IPaymentStrategy paypal = new PayPalPayment("alice@example.com");
+            context.SetPaymentStrategy(paypal);
+            context.Pay(200.00m);
+
+            Console.ReadLine();
+        }
+    }
+}
