@@ -1,0 +1,88 @@
+using System;
+
+namespace ProxyPatternExample
+{
+    // Step 2: Define the Subject Interface
+    public interface IImage
+    {
+        void Display();
+    }
+
+    // Step 3: Real Subject that loads the image (simulated)
+    public class RealImage : IImage
+    {
+        private string _fileName;
+
+        public RealImage(string fileName)
+        {
+            _fileName = fileName;
+            LoadFromRemoteServer();
+        }
+
+        private void LoadFromRemoteServer()
+        {
+            Console.WriteLine($"[Loading] {_fileName} from remote server...");
+            // Simulate delay
+            System.Threading.Thread.Sleep(1000); // 1 second delay
+        }
+
+        public void Display()
+        {
+            Console.WriteLine($"[Displaying] {_fileName}");
+        }
+    }
+
+    // Step 4: Proxy Class
+    public class ProxyImage : IImage
+    {
+        private RealImage _realImage;
+        private string _fileName;
+
+        public ProxyImage(string fileName)
+        {
+            _fileName = fileName;
+        }
+
+        public void Display()
+        {
+            if (_realImage == null)
+            {
+                Console.WriteLine("[Proxy] Image not loaded yet. Loading now...");
+                _realImage = new RealImage(_fileName);
+            }
+            else
+            {
+                Console.WriteLine("[Proxy] Using cached image.");
+            }
+
+            _realImage.Display();
+        }
+    }
+
+    // Step 5: Test the Proxy Implementation
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("=== Image Viewer with Proxy Pattern ===\n");
+
+            IImage image1 = new ProxyImage("nature.jpg");
+            IImage image2 = new ProxyImage("city.jpg");
+
+            // First display (loads image from server)
+            image1.Display();
+
+            Console.WriteLine();
+
+            // Display again (should use cached image)
+            image1.Display();
+
+            Console.WriteLine();
+
+            // Display another image (new load)
+            image2.Display();
+
+            Console.ReadLine();
+        }
+    }
+}
