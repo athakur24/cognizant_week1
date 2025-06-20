@@ -1,0 +1,109 @@
+using System;
+
+namespace AdapterPatternExample
+{
+    // Step 2: Define Target Interface
+    public interface IPaymentProcessor
+    {
+        void ProcessPayment(decimal amount);
+    }
+
+    // Step 3: Adaptee Classes (third-party APIs)
+
+    // PayPal Gateway with its own method
+    public class PayPalGateway
+    {
+        public void SendPayment(decimal amount)
+        {
+            Console.WriteLine($"[PayPal] Payment of {amount:C} processed using PayPal.");
+        }
+    }
+
+    // Stripe Gateway with its own method
+    public class StripeGateway
+    {
+        public void MakePayment(decimal amount)
+        {
+            Console.WriteLine($"[Stripe] Payment of {amount:C} processed using Stripe.");
+        }
+    }
+
+    // Razorpay Gateway with its own method
+    public class RazorpayGateway
+    {
+        public void PayAmount(decimal amount)
+        {
+            Console.WriteLine($"[Razorpay] Payment of {amount:C} processed using Razorpay.");
+        }
+    }
+
+    // Step 4: Adapter Classes
+
+    // PayPal Adapter
+    public class PayPalAdapter : IPaymentProcessor
+    {
+        private readonly PayPalGateway _paypal;
+
+        public PayPalAdapter()
+        {
+            _paypal = new PayPalGateway();
+        }
+
+        public void ProcessPayment(decimal amount)
+        {
+            _paypal.SendPayment(amount);
+        }
+    }
+
+    // Stripe Adapter
+    public class StripeAdapter : IPaymentProcessor
+    {
+        private readonly StripeGateway _stripe;
+
+        public StripeAdapter()
+        {
+            _stripe = new StripeGateway();
+        }
+
+        public void ProcessPayment(decimal amount)
+        {
+            _stripe.MakePayment(amount);
+        }
+    }
+
+    // Razorpay Adapter
+    public class RazorpayAdapter : IPaymentProcessor
+    {
+        private readonly RazorpayGateway _razorpay;
+
+        public RazorpayAdapter()
+        {
+            _razorpay = new RazorpayGateway();
+        }
+
+        public void ProcessPayment(decimal amount)
+        {
+            _razorpay.PayAmount(amount);
+        }
+    }
+
+    // Step 5: Testing the Adapter Pattern
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("=== Payment Processing System ===");
+
+            IPaymentProcessor paypalProcessor = new PayPalAdapter();
+            paypalProcessor.ProcessPayment(100.00m);
+
+            IPaymentProcessor stripeProcessor = new StripeAdapter();
+            stripeProcessor.ProcessPayment(250.00m);
+
+            IPaymentProcessor razorpayProcessor = new RazorpayAdapter();
+            razorpayProcessor.ProcessPayment(500.00m);
+
+            Console.ReadLine();
+        }
+    }
+}
